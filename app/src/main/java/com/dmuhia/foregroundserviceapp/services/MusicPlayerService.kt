@@ -31,11 +31,12 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 class MusicPlayerService: Service() {
-    private val binder = MusicBinder()
-    private var mediaPlayer = MediaPlayer()
+    private lateinit var binder:MusicBinder
+    private lateinit var mediaPlayer :MediaPlayer
 
     private var musicList = mutableListOf(Track())
     private val currentTrack = MutableStateFlow(Track())
@@ -64,6 +65,8 @@ class MusicPlayerService: Service() {
 
     override fun onCreate() {
         super.onCreate()
+        mediaPlayer = MediaPlayer()
+        binder = MusicBinder()
         val notificationManager = this.getSystemService(NotificationManager::class.java)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
@@ -183,7 +186,7 @@ class MusicPlayerService: Service() {
             try {
                 if (mediaPlayer.isPlaying.not()) return@launch
                 maxDuration.update { mediaPlayer.duration.toFloat() }
-                while (true) {
+                while (isActive) {
                     currentDuration.update { mediaPlayer.currentPosition.toFloat() }
                     delay(1000)
                 }
@@ -240,6 +243,27 @@ class MusicPlayerService: Service() {
         }
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.e("onUnbind", "On onUnbind called")
+        return super.onUnbind(intent)
+    }
+
+    // In MusicPlayerService class:
+    override fun onDestroy() {
+        // Stop and release the MediaPlayer resources
+        if (mediaPlayer.isPlaying) {
+            mediaPlayer.stop()
+        }
+        mediaPlayer.release()
+
+        // Stop the foreground notification
+        stopForeground(true)
+
+        // Stop the service if no longer needed
+        stopSelf()
+
+        Log.d("MusicPlayerService", "Music stopped and service destroyed.")
+    }
 
 
 }

@@ -134,7 +134,12 @@ class MainActivity : ComponentActivity() {
                                 }else {
                                     val intent =
                                         Intent(this@MainActivity, MusicPlayerService::class.java)
-                                    startService(intent)
+                                    startService(intent) //This tells Android to run the service.
+                                    /**bindService means your app can interact with the service and use its methods, like getting updates or calling functions
+                                     *
+                                     * BIND_AUTO_CREATE: This flag tells Android to automatically start the service if it isn't running already.
+                                     * Once the service is connected, the onServiceConnected() callback is triggered. Now, you can interact with the service via the IBinder object.
+                                     * **/
                                     bindService(intent, connection, BIND_AUTO_CREATE)
                                 }
                             }) {
@@ -249,21 +254,16 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-        val intent = Intent(this,MusicPlayerService::class.java)
-        startService(intent) //This tells Android to run the service.
-        /**bindService means your app can interact with the service and use its methods, like getting updates or calling functions
-         *
-         * BIND_AUTO_CREATE: This flag tells Android to automatically start the service if it isn't running already.
-         * Once the service is connected, the onServiceConnected() callback is triggered. Now, you can interact with the service via the IBinder object.
-         * **/
-        bindService(intent,connection,Context.BIND_AUTO_CREATE)
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isBound){
+            service = null
+            stopService(Intent(this@MainActivity,MusicPlayerService::class.java))
+            unbindService(connection)
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        unbindService(connection)
-    }
+
+
 
 }

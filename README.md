@@ -1,24 +1,28 @@
-# Foreground services
-- Services are background tasks that run without a user interface, and they are used for long-running tasks like music playback, file downloads, etc.
+#  Services
+- Services are background tasks that run without a user interface, and they are used for long-running tasks like music playback, file downloads, etc
+- Types of Services:
+  1. Foreground Service
+  2. Background Service
+  3. Bound Service
 
-Overview
+1.Foreground Service Overview 
 --
-- Music Player App::
-- Foreground services let you asynchronously perform operations that are noticeable to the user. 
-- Foreground services show a status bar notification, to make users aware that your app is performing a task in the foreground and is consuming system resources.
+- Foreground Service perform some operations that are noticeable to the user.The services continue running even when the user isn't interacting with the app. 
+- It must display a notification, to make users aware that your app is performing a task in the foreground.
+  This notification cannot be dismissed unless the service is either stopped or removed from the foreground.
 
-1. Declare foreground services and request permissions on AndroidManifest
-    - android:foregroundServiceType attribute - declares what kind of work the service does
-    - If multiple types apply to your service, separate them with the | operator. For example, if your service uses the camera and microphone, declare it like this:
-      `android:foregroundServiceType="camera|microphone"`
-2. Create a MusicPlayerService - 
-   - Initialize a MediaPlayer instance - help implements MediaPlayer operations such as play(),next(),pause(),prev() etc.
-   - Use MediaSessionCompact to enable media controls thru notifications
-   - Notification - use Foreground service to keep the app running when the user is interacting with other apps.(Display the notification with controls for play, pause, and skip)
-   - Binder Class - that will expose the service methods to the client bound to this service
-3. Bind Service to the client(Activity) - 
-   - Bind the MusicPlayerService to your activity using bindService() and ServiceConnection.
-   - Use IBinder on ServiceConnection callback fun to interact with the service and control the music player from the activity.
+    1. Declare foreground services and request permissions on AndroidManifest
+       - android:foregroundServiceType attribute - declares what kind of work the service does
+       - If multiple types apply to your service, separate them with the | operator. For example, if your service uses the camera and microphone, declare it like this:
+         `android:foregroundServiceType="camera|microphone"`
+     2. Create a MusicPlayerService - 
+        - Initialize a MediaPlayer instance - help implements MediaPlayer operations such as play(),next(),pause(),prev() etc.
+        - Use MediaSessionCompact to enable media controls thru notifications
+        - Notification - use Foreground service to keep the app running when the user is interacting with other apps.(Display the notification with controls for play, pause, and skip)
+        - Binder Class - that will expose the service methods to the client bound to this service
+     3. Bind Service to the client(Activity) - 
+        - Bind the MusicPlayerService to your activity using bindService() and ServiceConnection.
+        - Use IBinder on ServiceConnection callback fun to interact with the service and control the music player from the activity.
 
 Why Use a Foreground Service for Music Playback?
 --
@@ -27,7 +31,17 @@ Why Use a Foreground Service for Music Playback?
 - This is because Android’s battery optimization mechanisms tend to stop background services (especially in Android 8.0 and later), 
    which could result in your app stopping the music unexpectedly.
 
+#2. Bound Service
+---
+- A service is bound when an application component binds to it by calling bindService()
+- A bound service offers a client-server interface that allows components to interact with the service, send requests, receive results, and perform interprocess communication (IPC). 
+- A bound service runs only as long as another application component is bound to it.
 
+#3. Background Service
+<img src="media/servicesLifecycle.png" width="875" />
+<img src="media/licycle.png" width="875" />
+
+ref: https://developer.android.com/develop/background-work/services - services
 
 # Intent
 - Intent is a messaging object that allows you to request an action from another application component (such as an Activity, Service, or BroadcastReceiver).
