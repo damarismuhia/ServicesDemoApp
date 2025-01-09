@@ -1,6 +1,7 @@
 package com.dmuhia.foregroundserviceapp
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.ActivityManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -71,6 +72,7 @@ class MainActivity : ComponentActivity() {
     private val isPostNotificationGranted = MutableStateFlow(false)
     private var isBound = false
 
+
     /**
      * The MusicPlayerService is bound to the MainActivity using the ServiceConnection.
      * This allows the activity to communicate with the service and access its methods.
@@ -126,7 +128,7 @@ class MainActivity : ComponentActivity() {
                                     if (isPostNotificationGranted || permission.status.isGranted){
                                         val intent =
                                             Intent(this@MainActivity, MusicPlayerService::class.java)
-                                        startService(intent)
+                                         startService(intent)
                                         bindService(intent, connection, BIND_AUTO_CREATE)
                                     }else{
                                         permission.launchPermissionRequest()

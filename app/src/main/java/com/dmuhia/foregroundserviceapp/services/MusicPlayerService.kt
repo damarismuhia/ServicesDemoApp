@@ -1,6 +1,7 @@
 package com.dmuhia.foregroundserviceapp.services
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
@@ -76,10 +77,13 @@ class MusicPlayerService: Service() {
         }
     }
     override fun onBind(intent: Intent?): IBinder? {
+        Log.e("onbind", "On OnBIND called")
         return binder
     }
 
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.e("onStartCommand", "On onStartCommand called")
         if (intent !=null) {
             when(intent.action) {
                 PREV ->{
@@ -98,11 +102,12 @@ class MusicPlayerService: Service() {
                 }
             }
         }
-        /** START_STICKY is most often used for long-running services where you want the service to continue running even
-          if the system kills it to free up resources. however the the Intent will be null
-         * START_NOT_STICKY - if the system kills the service, you dont need to restart it. Eg one time download
-         * START_REDELIVER_INTENT - The service will be restarted if killed, and the last Intent that was used to start the service will be
-         * passed to the new instance eg. Messaging App
+        /** START_STICKY: The system will try to recreate the Service and call onStartCommand() with a null intent if the Service was killed due to resource constraints.
+         * START_NOT_STICKY: The system will not try to recreate the Service, and the Service will remain stopped until an explicit start command is sent.  Eg one time download
+         * START_REDELIVER_INTENT: The system will try to recreate the Service and redeliver the last intent that was passed to the
+           Service through onStartCommand() if the Service was killed before it finished processing the intent.eg. Messaging App
+         *
+         *
          * */
         return START_STICKY
     }
@@ -248,8 +253,10 @@ class MusicPlayerService: Service() {
         return super.onUnbind(intent)
     }
 
+
     // In MusicPlayerService class:
     override fun onDestroy() {
+        Log.e("onUnbind", "On onDestroy called")
         // Stop and release the MediaPlayer resources
         if (mediaPlayer.isPlaying) {
             mediaPlayer.stop()
