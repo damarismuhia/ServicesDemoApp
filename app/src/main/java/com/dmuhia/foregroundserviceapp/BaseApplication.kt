@@ -1,12 +1,6 @@
 package com.dmuhia.foregroundserviceapp
 
 import android.app.Application
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.content.Context
-import android.os.Build
-import com.dmuhia.foregroundserviceapp.utils.CHANNEL_ID
-import com.dmuhia.foregroundserviceapp.utils.CHANNEL_NAME
 
 
 class BaseApplication : Application() {

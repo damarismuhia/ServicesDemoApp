@@ -137,6 +137,109 @@ Part 2: Android Quiz
     - Use Proguard/DexGuard/R8 to obfuscate the code
     - Play Integrity API
     - Encryption
+    
+12. How to reduce build time of an android application?
+
+    Answer:
+    - Increase Heap Size
+    - Use the latest versions of the tools and plugins you use in your project
+    - Ensure that dynamic dependency is not used - as it will make gradle to go online and check for the latest version everytime it builds the app.
+    - Use Daemon — org.gradle.daemon=true - Daemon keeps the instance of the gradle up and running in the background even after your build finishes. 
+      This will remove the time required to initialize the gradle and decrease your build timing significantly.
+    - Enable parallel execution - If you’re working on a multi-module project, then forcing Gradle to execute tasks in parallel is also an easy performance gain. 
+      This works with the caveat that your tasks in different modules should be independent, and not access shared state, which you shouldn’t be doing anyway.
+
+13. How to plug memory Leak in Android? https://proandroiddev.com/everything-you-need-to-know-about-memory-leaks-in-android-d7a59faaf46a
+    Answer: A memory leak occurs when an app fails to release memory that it no longer needs or 
+            when it unintentionally retains references to objects, preventing the Garbage Collector from reclaiming its memory. 
+    
+    Causes of Memory leak:
+    1. Keeping references to Activities and Fragments - Activities and Fragments can be prone to memory leaks when references to 
+       them are held longer than necessary by Long-lived object such as (background tasks, singleton and static variables)
+       For instance, if a background task maintains a reference to an Activity that has been closed, 
+       the Activity’s resources may not be properly released.
+    
+       - Fix: Use WeakReference to hold a reference to the Activity to allow it to be garbage collected when need.
+    
+    2. Mishandling Context - Storing a reference to an Activity's context in a long-lived object can prevent the 
+       Activity from being garbage collected.
+    
+        - Fix: Use application context with WeakReference instead of Activity context
+                ` Example: class SingleTan() {
+                    private var contextRef: WeakReference<Context>? = null
+                    fun init(con: Context) {
+                    contextRef = WeakReference(con.applicationContext)
+                  }
+                }`
+                        
+    3. Mishandling of AsyncTask and Thread - Not canceling or cleaning up threads and AsyncTasks when associated Activity or Fragment is destroyed
+       - Fix: Always cancel them in onDestroy() or onStop()
+    4. Unregistered Listeners and Callbacks: - failing to unregister them when they are no longer needed can lead to memory leaks 
+       - unregister receiver - If you don’t unregister the broadcast receiver, then it still holds a reference to the activity, 
+         even if you close the activity.
+         `NB: If the broadcast Receiver is registered in onCreate(), then when the app goes into the background and resumed again, 
+         the receiver will not be registered again. So it is always good to register the broadcastReceiver in onStart() or onResume() of the activity and unregister in onStop().`
+    5. Release unused resources - When your Android app uses a resource, be sure to release the resource(on onDestroyView) when it is no longer needed. 
+      If you don't, the resource continues to take up memory even after your application finishes with them.
+
+14. How to support different screen sizes?
+
+    Answer:
+    - Create a flexible layout — The best way to create a responsive layout for different screen sizes is to use ConstraintLayout as the base layout in your UI.
+    - Use vector graphics: Use vector graphics for scalability
+    - Avoid hard-coded layout sizes - Use wrap_content or match_parent.
+
+15. Why is it recommended to use only the default constructor to create a Fragment?
+    Answer:
+    - Whenever the Android Framework decides to recreate our Fragment for example in case of orientation changes. Android calls the no-argument constructor of our Fragment.
+    - when the system restores a fragment it will automatically restore your bundle. This way you are guaranteed to restore the state of the fragment correctly to the same state the fragment was initialised with.
+
+
+
+
+Part 3
+-
+1. What is an Activity?
+    Answer:
+    - An Activity represents a single screen with a user interface. It acts as the entry point for interacting with the app and
+      serves as a container for views. Each activity is typically associated with a layout file that defines the UI components.
+2. Scenario in which only onDestroy is called for an activity without onPause() and onStop()?
+    Answer:
+    If finish() is called in the OnCreate() method of an activity, the system will invoke onDestroy() method directly
+3. Configuration changes on device rotation:
+   - A ViewModel is LifeCycle-Aware. I.e a ViewModel will not be destroyed if its owner is destroyed for a configuration change (e.g. rotation) - caches state and persists it through configuration changes.
+    The new instance of the owner will just re-connected to the existing ViewModel. So if you rotate an Activity three times, you have just created three different Activity instances, but you only have one ViewModel.
+   - onRestoreInstanceState - Restores the fragment’s state after it has been recreated., Retrieve the saved data and restore the fragment’s UI elements or state.
+   - onSaveInstanceState() - Saves the fragment’s state(scroll positions) before it might be destroyed due to configuration changes (e.g., screen rotation, device reboots).
+
+4. Mention two ways to clear the back stack of Activities when a new Activity is called using intent.
+    Answer:
+    The first approach is to use a FLAG_ACTIVITY_CLEAR_TOP flag. 
+    The second way is by using FLAG_ACTIVITY_CLEAR_TASK and FLAG_ACTIVITY_NEW_TASK in conjunction.
+
+5. What is a Fragment, and how does it differ from an Activity?
+    Answer:
+    - Fragment is a UI entity attached to Activity.Activity can have multiple fragments attached to it. 
+      Fragment must be attached to an activity and its lifecycle will depend on its host activity.
+
+6. Difference between margin & padding?
+   - Padding will be space added inside the container, for instance, if it is a button, padding will be added inside the button. Margin will be space added outside the container
+
+
+
+ When should you use a Fragment, rather than an Activity
+ What is the difference between Serializable and Parcelable?
+ 
+
+
+
+
+
+
+
+
+
+
 
 Part 3: Kotlin Quiz
 --
@@ -163,3 +266,5 @@ It could be a memory space issue. Make sure there’s enough memory space.
 Clear the app data by clearing the cache memory using “settings” under Application Manager.
 Not all apps run the same on assorted machines, so you may have to tinker with memory management.
 It may be a matter of compatibility; a problem that can be headed off by testing the app on as many of your devices as possible beforehand.
+
+DESIGN: https://medium.com/@prabhat.rai1707/android-system-design-interview-google-uber-29dedbbe9fda
