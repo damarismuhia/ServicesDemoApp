@@ -21,6 +21,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            isDebuggable = false
+            isCrunchPngs = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -36,6 +38,11 @@ android {
     }
     buildFeatures {
         compose = true
+    }
+    tasks.register("testTask"){
+        doLast{
+            println("Hello Custom Task")
+        }
     }
 }
 

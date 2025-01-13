@@ -194,7 +194,18 @@ Part 2: Android Quiz
     - Whenever the Android Framework decides to recreate our Fragment for example in case of orientation changes. Android calls the no-argument constructor of our Fragment.
     - when the system restores a fragment it will automatically restore your bundle. This way you are guaranteed to restore the state of the fragment correctly to the same state the fragment was initialised with.
 
-
+16. How to optimize android app for performance?
+    1. Leverage Kotlin's features such as inline class this allow you to create a type without runtime overhead and data class which automatically generates boilerplate code.
+    2. Use memory efficiently(Cautious of memory leak) - Inefficient memory usage can lead to performance issues and app crashes.
+        - use the onTrimMemory to release resources when the app is in the background/device is on low memoer
+        - use the android:largeheap  to request larger heap size for ur app
+        - use the SparseArray instead of hashmap to reduce memory usage
+    3. Implement ViewBinding - this reduces the overhead of findViewById()
+    4. Optimize Layouts with ConstraintLayout - which offers a flatter view hierarchy, 
+       use merge tag to help eliminate redundant view groups in your view hierarchy when including one layout within another,Using the ViewStub class to defer the loading of complex views until they are needed.
+    5. Utilize Coroutines - Lightweight and efficient
+    6. Embrace Null Safety - Null safety prevent runtime crashes
+    7. Use scalable image types
 
 
 Part 3
@@ -224,6 +235,50 @@ Part 3
 
 6. Difference between margin & padding?
    - Padding will be space added inside the container, for instance, if it is a button, padding will be added inside the button. Margin will be space added outside the container
+
+
+
+
+Part 3: Android Tools and Technologies
+--
+1. What is ADB?
+    Answer:
+    - This is a command line tools that allow us to communicate with a device, it allow us to install and debug our app.
+      - It consists of components such as 
+        - client - which sends commands. The client runs on your development machine, 
+        - daemon which run the command 
+        - server which manages communication between the client and the daemon. The server runs as a background process on your development machine.
+
+2. What is StrictMode?
+   - It helps detects things you might be doing by accident and brings them to your attention so you can fix them.
+   - It is commonly used to catch accidental disk or network access on the application’s main thread
+     - Example: `StrictMode.setVmPolicy(VmPolicy.Builder()
+                   .detectCleartextNetwork()
+                   .detectActivityLeaks()
+                   .detectLeakedRegistrationObjects()
+                   .detectLeakedSqlLiteObjects()
+                   .penaltyLog()
+                   .penaltyDeath()
+                   .build())`
+  
+3. What is Kotlin DSL for Gradle?
+   - Kotlin DSL (Domain-Specific Language) is an alternative to the traditional Groovy for configuring Gradle build scripts
+   - With Kotlin DSL, you can write your Gradle build configurations using the Kotlin programming language instead of Groovy.
+   - It provides:
+     • Type Safety: It provides compile-time type checking, reducing runtime errors in your build scripts.
+     • Better IDE support with auto-completion, and improved navigation to source code
+   
+4. What is Gradle?
+   - Gradle is a build tool that we use for Android development to automate the process of building and publishing apps.
+   - Gradle builds run in three phases.
+     - Initialization - to determine which projects and subprojects are included in the build, and sets up classpaths containing your build files and applied plugins. 
+       This phase focuses on a settings file where you declare projects to build and the locations from which to fetch plugins and libraries.
+
+5. How do you create a custom task in Gradle?
+- 
+
+
+
 
 
 

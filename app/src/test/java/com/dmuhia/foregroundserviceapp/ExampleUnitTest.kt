@@ -13,6 +13,10 @@ import org.junit.Assert.*
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
+        val name = "Damaris"
+       val name1 =  StringBuilder().append("Wambui")
+        name1.append(name)
+        println("Name is $name1")
         assertEquals(4, 2 + 2)
     }
 }
